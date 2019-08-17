@@ -10,6 +10,7 @@ module.exports = {
     contentBase: path.resolve(__dirname, 'dist'),
     watchContentBase: true,
     stats: 'errors-only',
+    port: 3000,
     open: true
   },
   module: {
