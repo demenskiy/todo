@@ -3,11 +3,11 @@ export default class TasksController {
     this.model = model;
     this.view = view;
 
-    this.view.on('add', onAddTask);
-    this.view.on('edit', onEditTask);
-    this.view.on('delete', onDeleteTask);
+    this.view.on('add', this.onAddTask);
+    this.view.on('edit', this.onEditTask);
+    this.view.on('delete', this.onDeleteTask);
 
-    this.view.renderTasks();
+    this.view.renderTasks(this.model.tasks);
   }
 
   onAddTask = task => this.view.addTask(this.model.addTask(task));

@@ -14,7 +14,7 @@ export default class TasksModel extends EventEmitter {
 
   addTask(task) {
     const id = this.tasks.length ? this.tasks[this.tasks.length - 1].id + 1 : 1;
-    task.id = id;
+    task = { id, ...task, isCompleted: false };
 
     this.tasks.push(task);
 
@@ -23,7 +23,7 @@ export default class TasksModel extends EventEmitter {
     return task;
   }
 
-  updateTask(data) {
+  editTask(data) {
     this.tasks = this.tasks.map(task =>
       task.id === data.id ? { ...task, ...data } : task
     );
