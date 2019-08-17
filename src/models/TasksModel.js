@@ -14,7 +14,7 @@ export default class TasksModel extends EventEmitter {
 
   addTask(task) {
     const id = this.tasks.length ? this.tasks[this.tasks.length - 1].id + 1 : 1;
-    task = { id, ...task, isCompleted: false };
+    task = { id, ...task, isChecked: false };
 
     this.tasks.push(task);
 

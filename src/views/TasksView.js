@@ -48,7 +48,7 @@ export default class TasksView extends EventEmitter {
 
       const data = {
         id: +el.dataset.id,
-        isCompleted: target.checked
+        isChecked: target.checked
       };
 
       this.emit('edit', data);
@@ -75,29 +75,24 @@ export default class TasksView extends EventEmitter {
     return this.list.querySelector(`[data-id='${id}']`);
   }
 
-  renderForm() {
-    const markup = `
-      <form id='form-add-task' class='form'>
-        <input name='taskName' placeholder='Enter task'>      
-        <button name='taskAdd'>Add Task</button>
-      </form>
-    `;
-
-    return markup;
+  renderTasks(tasks) {
+    tasks.forEach(task => this.renderTask(task));
   }
 
   renderTask(task) {
+    const isChecked = task.isChecked ? ' checked' : '';
+
     const markup = `
       <li class='list-item'>
-        <div class='task' data-id='${task.id}'>
+        <div class='task${isChecked}' data-id='${task.id}'>
 
           <div class='task-check'>
-            <input type='checkbox' name='taskCheck'>
+            <input type='checkbox' name='taskCheck'${isChecked}>
           </div>  
         
           <div class='task-name'><h4>${task.name}</h4></div>
 
-          <div class='action'>
+          <div class='task-actions'>
             <button name='taskEdit'>Edit</button>
             <button name='taskDelete'>Delete</button>
           </div>
@@ -109,17 +104,34 @@ export default class TasksView extends EventEmitter {
     this.list.insertAdjacentHTML('afterbegin', markup);
   }
 
-  renderTasks(tasks) {
-    tasks.forEach(task => this.renderTask(task));
+  renderForm() {
+    const markup = `
+      <div class='tasks-form'>
+        <form id='form-add-task' class='form'>
+          <input name='taskName' placeholder='Enter task'>      
+          <button name='taskAdd'>Add Task</button>
+        </form>
+      </div>
+    `;
+
+    return markup;
+} 
+
+  renderList() {
+    const markup = `
+      <div class='tasks-list'>
+        <ul class='list'></ul>
+       </div>
+    `;
+
+    return markup;
   }
 
   render() {
     const markup = `
-      <section id='tasks'>
-        <div class='tasks-form'>${this.renderForm()}</div>
-        <div class='tasks-list'>
-          <ul class='list'></ul>
-        </div>
+      <section class='tasks'>
+        ${this.renderForm()}
+        ${this.renderList()}
       </section>
     `;
 
