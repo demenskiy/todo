@@ -1,4 +1,4 @@
-export const findParent = (el, selector) => {
-  while (!el.matches(selector)) el = el.parentElement;
-  return el;
+export const findElementParent = (element, selector) => {
+  while (!element.matches(selector)) element = element.parentElement;
+  return element;
 };

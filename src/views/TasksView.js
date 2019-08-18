@@ -1,5 +1,5 @@
 import EventEmitter from '../assets/EventEmitter';
-import { findParent } from '../assets/helpers';
+import { findElementParent } from '../assets/helpers';
 
 export default class TasksView extends EventEmitter {
   constructor() {
@@ -10,53 +10,84 @@ export default class TasksView extends EventEmitter {
   }
 
   setEventListeners() {
-    let taskName = this.form.taskName;
+    this.form.addEventListener('click', event => {
+      event.preventDefault();
 
-    this.form.addEventListener('click', e => {
-      e.preventDefault();
-
-      e.target.name === 'taskAdd' && onAddTask();
+      if (event.target.name === 'taskAdd') return onAddTask();
     });
 
-    this.list.addEventListener('click', e => {
-      e.target.name === 'taskEdit' && onEditTask(e.target);
-      e.target.name === 'taskDelete' && onDeleteTask(e.target);
-      e.target.name === 'taskCheck' && onCheckTask(e.target);
+    this.list.addEventListener('click', event => {
+      if (event.target.name === 'taskEdit') return onEditTask(event.target);
+      if (event.target.name === 'taskSave') return onSaveTask(event.target);
+      if (event.target.name === 'taskDelete') return onDeleteTask(event.target);
+      if (event.target.name === 'taskCheck') return onCheckTask(event.target);
     });
 
     const onAddTask = () => {
-      if (!validate()) return;
+      const { taskName } = this.form;
 
-      const task = { name: taskName.value };
+      if (!validate(taskName)) return;
 
-      this.emit('add', task);
+      const task = { name: taskName.value.trim() };
 
       taskName.value = '';
+
+      this.emit('add', task);
     };
 
-    const onEditTask = target => {};
+    const onEditTask = button => {
+      const task = findElementParent(button, '[data-id]');
+      const taskName = task.querySelector('.title');
 
-    const onDeleteTask = target => {
-      const el = findParent(target, '[data-id]');
-      const id = +el.dataset.id;
+      button.name = 'taskSave';
+      button.textContent = 'Save';
+
+      const input = `<input 
+        name='taskNameNew'
+        placeholder='Edit task name'
+        value='${taskName.textContent}'>
+      `;
+
+      taskName.insertAdjacentHTML('afterend', input);
+    };
+
+    const onSaveTask = button => {
+      const task = findElementParent(button, '[data-id]');
+      const id = +task.dataset.id;
+      const taskNameNew = task.querySelector('[name="taskNameNew"');
+
+      if (!validate(taskNameNew)) return;
+
+      taskNameNew.remove();
+
+      button.name = 'taskEdit';
+      button.textContent = 'Edit';
+
+      const data = { id, name: taskNameNew.value.trim() };
+
+      this.emit('edit', data);
+    };
+
+    const onDeleteTask = button => {
+      const task = findElementParent(button, '[data-id]');
+      const id = +task.dataset.id;
 
       this.emit('delete', id);
     };
 
-    const onCheckTask = target => {
-      const el = findParent(target, '[data-id]');
+    const onCheckTask = checkbox => {
+      const task = findElementParent(checkbox, '[data-id]');
 
       const data = {
-        id: +el.dataset.id,
-        isChecked: target.checked
+        id: +task.dataset.id,
+        isChecked: checkbox.checked
       };
 
       this.emit('edit', data);
     };
 
-    const validate = () => {
-      const { value } = taskName;
-      return value.length > 3 ? true : false;
+    const validate = field => {
+      return field.value.length > 3 ? true : false;
     };
   }
 
@@ -64,7 +95,12 @@ export default class TasksView extends EventEmitter {
     this.renderTask(task);
   }
 
-  editTask(data) {}
+  editTask(data) {
+    const task = this.getTask(data.id);
+    const taskName = task.querySelector('.title');
+
+    taskName.textContent = data.name;
+  }
 
   deleteTask(id) {
     const task = this.getTask(id);
@@ -72,10 +108,12 @@ export default class TasksView extends EventEmitter {
   }
 
   getTask(id) {
-    return this.list.querySelector(`[data-id='${id}']`);
+    const task = this.list.querySelector(`[data-id='${id}']`);
+
+    return task;
   }
 
-  renderTasks(tasks) {
+  displayTasks(tasks) {
     tasks.forEach(task => this.renderTask(task));
   }
 
@@ -90,7 +128,9 @@ export default class TasksView extends EventEmitter {
             <input type='checkbox' name='taskCheck'${isChecked}>
           </div>  
         
-          <div class='task-name'><h4>${task.name}</h4></div>
+          <div class='task-name'>
+            <h4 class='title'>${task.name}</h4>
+          </div>
 
           <div class='task-actions'>
             <button name='taskEdit'>Edit</button>
@@ -115,7 +155,7 @@ export default class TasksView extends EventEmitter {
     `;
 
     return markup;
-} 
+  }
 
   renderList() {
     const markup = `
