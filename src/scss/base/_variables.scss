@@ -1,0 +1,33 @@
+// Variables
+
+$font-first: 'Barlow', 'Helvetica', 'Arial', sans-serif;
+$font-second: 'PT Serif', 'Times', 'Times New Roman', serif;
+$font-code: 'Consolas', 'Menlo', monospace;
+
+// Colors
+$color-background: #ffffff;
+$color-base: #ffffff;
+$color-invalid: #e22c31;
+$color-success: #2dbc53;
+$color-active: #0b59f7;
+$color-first: #212121;
+$color-second: #909090;
+$color-third: #f2f2f2;
+
+// Mixins variables
+$box-shadow-x: 0;
+$box-shadow-y: 10px;
+$box-shadow-blur: 15px;
+$box-shadow-spread: 0;
+$box-shadow-color: rgba(0, 0, 0, 0.1);
+
+$border-size: 2px;
+$border-style: solid;
+$border-color: $color-third;
+$border-top: null;
+$border-bottom: null;
+$border-left: null;
+$border-right: null;
+
+$border-radius: 10px;
+$border-radius-small: 5px;

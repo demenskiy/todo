@@ -147,10 +147,12 @@ export default class TasksView extends EventEmitter {
   renderForm() {
     const markup = `
       <div class='tasks-form'>
-        <form id='form-add-task' class='form'>
-          <input name='taskName' placeholder='Enter task'>      
-          <button name='taskAdd'>Add Task</button>
-        </form>
+        <div class='container'>
+          <form id='form-add-task' class='form'>
+            <input name='taskName' autocomplete='off' placeholder='Enter task'>      
+            <button name='taskAdd'>Add</button>
+          </form>
+        </div>
       </div>
     `;
 
@@ -169,13 +171,11 @@ export default class TasksView extends EventEmitter {
 
   render() {
     const markup = `
-      <section class='tasks'>
-        ${this.renderForm()}
         ${this.renderList()}
-      </section>
+        ${this.renderForm()}
     `;
 
-    const root = document.querySelector('#root');
+    const root = document.querySelector('#tasks');
     root.insertAdjacentHTML('beforeend', markup);
 
     this.form = root.querySelector('.tasks-form .form');

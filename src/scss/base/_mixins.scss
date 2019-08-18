@@ -1,0 +1,108 @@
+// Mixins
+
+@mixin box-shadow(
+  $x: $box-shadow-x,
+  $y: $box-shadow-y,
+  $blur: $box-shadow-blur,
+  $spread: $box-shadow-spread,
+  $color: $box-shadow-color
+) {
+  box-shadow: $x $y $blur $spread $color;
+}
+
+@mixin border(
+  $size: $border-size,
+  $style: $border-style,
+  $color: $border-color,
+  $top: $border-top,
+  $bottom: $border-bottom,
+  $left: $border-left,
+  $right: $border-right
+) {
+  @if $top or $bottom or $left or $right {
+    @each $angle,
+      $value in (top: $top, bottom: $bottom, left: $left, right: $right)
+    {
+      @if $value != null {
+        border#{'-'+$angle}: $value $style $color;
+      }
+    }
+  } @else {
+    border: $size $style $color;
+  }
+}
+
+@mixin margin($top: null, $right: null, $bottom: null, $left: null) {
+  @each $param,
+    $value in (top: $top, right: $right, bottom: $bottom, left: $left)
+  {
+    @if $value != null {
+      margin-#{$param}: $value;
+
+      &:last-child {
+        @if $param == 'right' or 'bottom' {
+          margin-#{$param}: 0;
+        } @else {
+          margin-#{$param}: 0;
+        }
+      }
+    }
+  }
+}
+
+@mixin flex-center($align: center, $justify: center, $direction: row) {
+  display: flex;
+  flex-direction: $direction;
+  align-items: $align;
+  justify-content: $justify;
+}
+
+@mixin position-center($direction: center) {
+  position: absolute;
+
+  @if $direction == 'top' {
+    top: 50%;
+    transform: translateY(-50%);
+  } @else if $direction == 'left' {
+    left: 50%;
+    transform: translateX(-50%);
+  } @else {
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+  }
+}
+
+@mixin image-cover($radius: none) {
+  img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+
+    @if $radius == 'radius' {
+      border-radius: $border-radius;
+    } @else if $radius != 'none' and $radius != 'radius' {
+      border-radius: #{$radius}px;
+    }
+  }
+}
+
+@mixin image-overlay($radius: none) {
+  position: relative;
+
+  &:after {
+    content: '';
+    position: absolute;
+    left: 0;
+    top: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, 0.3);
+
+    @if $radius == 'radius' {
+      border-radius: $border-radius;
+    } @else if $radius != 'none' and $radius != 'radius' {
+      border-radius: #{$radius}px;
+    }
+  }
+}
