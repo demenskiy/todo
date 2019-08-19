@@ -1,0 +1,51 @@
+.task-check {
+  label {
+    position: relative;
+    display: block;
+  }
+
+  input {
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    opacity: 0;
+    z-index: 10;
+
+    &:hover,
+    &:focus {
+      + .checkbox {
+        border-color: $color-primary;
+
+        &::after {
+          color: $color-primary;
+        }
+      }
+    }
+
+    &:checked {
+      + .checkbox {
+        &::after {
+          opacity: 1;
+        }
+      }
+    }
+  }
+
+  .checkbox {
+    display: block;
+    width: 30px;
+    height: 30px;
+    @include border($size: 2px);
+    border-radius: 3px;
+
+    &::after {
+      content: '\f00c';
+      font-family: 'Font Awesome 5 Free';
+      font-weight: 900;
+      font-size: 20px;
+      color: $color-third;
+      @include position-center();
+      opacity: 0;
+    }
+  }
+}

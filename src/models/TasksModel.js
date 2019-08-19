@@ -1,5 +1,5 @@
-import store from '../assets/Store';
-import EventEmitter from '../assets/EventEmitter';
+import store from '../store';
+import EventEmitter from '../lib/EventEmitter';
 
 export default class TasksModel extends EventEmitter {
   constructor() {

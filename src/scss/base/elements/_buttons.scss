@@ -1,0 +1,48 @@
+button,
+input[type='submit'] {
+  font-size: 18px;
+  font-weight: 600;
+  color: $color-first;
+  background-color: $color-primary;
+  border: none;
+  border-radius: $border-radius-small;
+  padding: 10px 16px;
+  outline: none;
+  cursor: pointer;
+
+  &:hover,
+  &:focus {
+    background-color: $color-primary-action;
+  }
+
+  &:disabled,
+  &:disabled:hover {
+    color: $color-fourth;
+    background-color: $color-fifth;
+    border-color: transparent;
+    cursor: not-allowed;
+  }
+}
+
+.btn-secondary {
+  color: $color-fourth;
+  background-color: transparent;
+  padding: 0;
+
+  &:hover,
+  &:focus {
+    color: $color-primary;
+    background-color: transparent;
+  }
+
+  &.attention {
+    &:hover,
+    &:focus {
+      color: $color-attention;
+    }
+  }
+
+  > i {
+    font-size: 22px;
+  }
+}

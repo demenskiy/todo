@@ -1,0 +1,37 @@
+input,
+select,
+textarea {
+  font-size: 20px;
+  font-weight: 400;
+  color: $color-second;
+  background-color: $color-first;
+  @include border(2px);
+  border-radius: $border-radius-small;
+  padding: 17px 20px 16px 20px;
+  outline: none;
+
+  &::placeholder {
+    color: $color-third;
+  }
+
+  &:hover,
+  &:focus {
+    color: $color-second;
+    border-color: $color-primary;
+  }
+
+  &:focus {
+    &::placeholder {
+      color: inherit;
+    }
+  }
+
+  &:disabled,
+  &:disabled:hover,
+  &:disabled:hover::placeholder {
+    color: $color-fourth;
+    background-color: $color-fifth;
+    border-color: $color-fourth;
+    cursor: not-allowed;
+  }
+}

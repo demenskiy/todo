@@ -1,0 +1,17 @@
+.tasks-form {
+  margin-top: 50px;
+
+  form {
+    position: relative;
+
+    input {
+      width: 100%;
+      padding-right: 20%;
+    }
+
+    button {
+      @include position-center('top');
+      right: 10px;
+    }
+  }
+}

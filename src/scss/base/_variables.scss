@@ -1,18 +1,19 @@
 // Variables
 
-$font-first: 'Barlow', 'Helvetica', 'Arial', sans-serif;
-$font-second: 'PT Serif', 'Times', 'Times New Roman', serif;
+// Font
+$font-first: 'Noto Sans', 'Helvetica', 'Arial', sans-serif;
+$font-second: 'Times', 'Times New Roman', serif;
 $font-code: 'Consolas', 'Menlo', monospace;
 
 // Colors
-$color-background: #ffffff;
-$color-base: #ffffff;
-$color-invalid: #e22c31;
-$color-success: #2dbc53;
-$color-active: #0b59f7;
-$color-first: #212121;
-$color-second: #909090;
-$color-third: #f2f2f2;
+$color-primary: #39cccc;
+$color-primary-action: #39c0c0;
+$color-first: #ffffff;
+$color-second: #111111;
+$color-third: #aaaaaa;
+$color-fourth: #dddddd;
+$color-fifth: #f8f8f8;
+$color-attention: #ff4136;
 
 // Mixins variables
 $box-shadow-x: 0;
@@ -23,7 +24,7 @@ $box-shadow-color: rgba(0, 0, 0, 0.1);
 
 $border-size: 2px;
 $border-style: solid;
-$border-color: $color-third;
+$border-color: $color-fourth;
 $border-top: null;
 $border-bottom: null;
 $border-left: null;

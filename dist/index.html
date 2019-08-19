@@ -4,12 +4,34 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <meta http-equiv="X-UA-Compatible" content="ie=edge" />
-    <title>userOverview</title>
+    <link rel="stylesheet" href="css/fontawesome.min.css" />
+    <title>Todo</title>
   </head>
   <body>
     <noscript>You need to enable JavaScript to run this app.</noscript>
 
-    <div id="root"></div>
+    <div id="root">
+      <main id="app-main">
+        <div class="container">
+          <section class="page-title">
+            <h1 class="title">What todo?</h1>
+          </section>
+
+          <section id="tasks"></section>
+        </div>
+      </main>
+
+      <footer id="app-footer">
+        <div class="container">
+          <div class="copyrights">
+            <p>
+              <span>This app is developed by</span>
+              <a href="https://github.com/demenskiy">demenskiy</a>.
+            </p>
+          </div>
+        </div>
+      </footer>
+    </div>
 
     <script src="bundle.js"></script>
   </body>
