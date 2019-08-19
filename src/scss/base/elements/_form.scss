@@ -4,10 +4,11 @@ textarea {
   font-size: 20px;
   font-weight: 400;
   color: $color-second;
+  height: 100%;
   background-color: $color-first;
   @include border(2px);
   border-radius: $border-radius-small;
-  padding: 17px 20px 16px 20px;
+  padding: 15px 20px 14px 20px;
   outline: none;
 
   &::placeholder {

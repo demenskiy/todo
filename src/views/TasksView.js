@@ -39,12 +39,12 @@ export default class TasksView extends EventEmitter {
 
   renderForm() {
     const markup = `
-      <section class='tasks-form'>
+      <div class='tasks-form'>
         <form id='form-add-task'>
           <input type='text' name='taskName' placeholder='Enter task'>      
           <button type='submit' name='taskAdd'>Add</button>
         </form>
-      </section>
+      </div>
     `;
 
     this.root.insertAdjacentHTML('beforeend', markup);
@@ -55,26 +55,42 @@ export default class TasksView extends EventEmitter {
 
   renderList() {
     const markup = `
-      <div class='tasks-list'>
-        <ul></ul>
-       </div>
+      <div class='tasks-lists'>
+
+        <div class='tasks-current'>
+          <div class='section-title'>
+            <h3 class='title'>Current</h3>
+          </div>
+          <ul></ul>
+        </div>
+
+        <div class='tasks-completed'>
+          <div class='section-title'>
+            <h3 class='title'>Completed</h3>
+          </div>
+          <ul></ul>
+        </div>
+        
+      </div>
     `;
 
     this.root.insertAdjacentHTML('beforeend', markup);
 
-    this.list = this.root.querySelector('.tasks-list ul');
+    this.list = this.root.querySelector('.tasks-lists');
+    this.listCurrent = this.list.querySelector('.tasks-current ul');
+    this.listCompleted = this.list.querySelector('.tasks-completed ul');
   }
 
   renderTask(task) {
-    const isChecked = task.isChecked ? ' checked' : '';
+    const className = task.isChecked ? ' checked' : '';
 
     const markup = `
       <li>
-        <div class='task${isChecked}' data-id='${task.id}'>
+        <div class='task${className}' data-id='${task.id}'>
 
           <div class='task-check'>
             <label>
-              <input type='checkbox' name='taskCheck'${isChecked}>
+              <input type='checkbox' name='taskCheck'${className}>
               <span class='checkbox'></span>
             </label>
           </div>  
@@ -96,7 +112,8 @@ export default class TasksView extends EventEmitter {
       </li>
     `;
 
-    this.list.insertAdjacentHTML('afterbegin', markup);
+    const list = task.isChecked ? this.listCompleted : this.listCurrent;
+    list.insertAdjacentHTML('afterbegin', markup);
   }
 
   render() {
@@ -107,73 +124,84 @@ export default class TasksView extends EventEmitter {
   setEventListeners() {
     this.form.addEventListener('click', event => {
       event.preventDefault();
+      const { target } = event;
 
-      if (event.target.name === 'taskAdd') return onAddTask(event.target);
+      if (target.name === 'taskAdd') return onAddTask(target);
     });
 
     this.list.addEventListener('click', event => {
-      if (event.target.name === 'taskEdit') return onEditTask(event.target);
-      if (event.target.name === 'taskSave') return onSaveTask(event.target);
-      if (event.target.name === 'taskDelete') return onDeleteTask(event.target);
-      if (event.target.name === 'taskCheck') return onCheckTask(event.target);
+      const { target } = event;
+      const { parentElement } = target;
+
+      if (parentElement.name === 'taskEdit') return onEditTask(target);
+      if (parentElement.name === 'taskSave') return onSaveTask(target);
+      if (parentElement.name === 'taskDelete') return onDeleteTask(target);
+      if (target.name === 'taskCheck') return onCheckTask(target);
     });
 
-    const onAddTask = button => {
+    const onAddTask = () => {
       const { taskName } = this.form;
+      const name = taskName.value.trim();
 
-      button.blur();
-
-      if (!validate(taskName)) return;
-
-      const task = { name: taskName.value.trim() };
+      if (!validate(name)) return;
 
       taskName.value = '';
+
+      const task = { name };
 
       this.emit('add', task);
     };
 
-    const onEditTask = button => {
-      const task = findElementParent(button, '[data-id]');
-      const taskName = task.querySelector('.title');
+    const onEditTask = target => {
+      const task = findElementParent(target, '[data-id]');
+      const title = task.querySelector('.title');
+      const button = target.parentElement;
 
       button.name = 'taskSave';
-      // button.textContent = 'Save';
+      button.removeChild(target);
+      button.insertAdjacentHTML('beforeend', '<i class="far fa-save"></i>');
 
       const markup = `
-        <div class='edit-task'>  
+        <div class='task-edit'>  
           <input 
             name='taskNameNew'
             placeholder='Edit task name'
-            value='${taskName.textContent}'
+            value='${title.textContent}'
           >
         </div>
       `;
 
-      taskName.insertAdjacentHTML('afterend', markup);
+      title.insertAdjacentHTML('afterend', markup);
 
       const taskNameNew = task.querySelector('[name="taskNameNew"');
+
       taskNameNew.select();
     };
 
-    const onSaveTask = button => {
-      const task = findElementParent(button, '[data-id]');
-      const id = +task.dataset.id;
+    const onSaveTask = target => {
+      const task = findElementParent(target, '[data-id]');
       const taskNameNew = task.querySelector('[name="taskNameNew"');
+      const button = target.parentElement;
 
-      if (!validate(taskNameNew)) return;
+      const id = +task.dataset.id;
+      const name = taskNameNew.value.trim();
 
-      taskNameNew.remove();
+      if (!validate(name)) return;
 
+      taskNameNew.parentElement.remove();
+
+      button.blur();
       button.name = 'taskEdit';
-      // button.textContent = 'Edit';
+      button.removeChild(target);
+      button.insertAdjacentHTML('beforeend', '<i class="far fa-edit"></i>');
 
-      const data = { id, name: taskNameNew.value.trim() };
+      const data = { id, name };
 
       this.emit('edit', data);
     };
 
-    const onDeleteTask = button => {
-      const task = findElementParent(button, '[data-id]');
+    const onDeleteTask = target => {
+      const task = findElementParent(target, '[data-id]');
       const id = +task.dataset.id;
 
       this.emit('delete', id);
@@ -193,7 +221,7 @@ export default class TasksView extends EventEmitter {
     };
 
     const validate = field => {
-      return field.value.length > 3 ? true : false;
+      return field.length > 3 ? true : false;
     };
   }
 }

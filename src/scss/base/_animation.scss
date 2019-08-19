@@ -7,7 +7,7 @@ button,
 }
 
 .task {
-  animation: fade 1s ease;
+  animation: fade 0.6s ease;
 
   &.checked .task-name .title::after {
     animation: fillLength 0.6s ease;

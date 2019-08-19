@@ -19,6 +19,19 @@
   }
 }
 
+#root {
+  display: flex;
+  flex-direction: column;
+  min-width: 320px;
+  min-height: 100vh;
+  background-color: $color-first;
+  overflow-x: hidden;
+}
+
+#app-main {
+  flex: 1;
+}
+
 .container {
   max-width: 1140px;
   padding: 0 15px;
@@ -36,17 +49,4 @@
   @media (max-width: 576px) {
     max-width: 540px;
   }
-}
-
-#root {
-  display: flex;
-  flex-direction: column;
-  min-width: 320px;
-  min-height: 100vh;
-  background-color: $color-first;
-  overflow-x: hidden;
-}
-
-#app-main {
-  flex: 1;
 }
