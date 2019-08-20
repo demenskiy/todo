@@ -49,4 +49,15 @@
       opacity: 0;
     }
   }
+
+  @media (max-width: 576px) {
+    .checkbox {
+      width: 25px;
+      height: 25px;
+
+      &::after {
+        font-size: 16px;
+      }
+    }
+  }
 }

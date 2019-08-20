@@ -6,6 +6,13 @@
     text-align: center;
     color: $color-fourth;
   }
+
+  @media (max-width: 576px) {
+    margin-top: 30px;
+    .title {
+      font-size: 60px;
+    }
+  }
 }
 
 .section-title {
@@ -26,6 +33,17 @@
       background-color: $color-fourth;
       border-radius: 2px;
       margin-left: 30px;
+    }
+  }
+
+  @media (max-width: 576px) {
+    margin-top: 25px;
+    .title {
+      font-size: 18px;
+
+      &::after {
+        margin-left: 15px;
+      }
     }
   }
 }

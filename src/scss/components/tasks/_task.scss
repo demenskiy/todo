@@ -1,0 +1,78 @@
+.task {
+  position: relative;
+  display: flex;
+  align-items: center;
+  background-color: $color-first;
+  @include border(2px);
+  border-radius: $border-radius-small;
+  padding: 15px;
+
+  &:hover,
+  &:focus {
+    border-color: $color-primary;
+  }
+
+  &.checked {
+    background-color: $color-fifth;
+
+    .task-name .title {
+      position: relative;
+      color: $color-third;
+
+      &::after {
+        content: '';
+        @include position-center('top');
+        left: 0;
+        width: 100%;
+        height: 2px;
+        border-radius: 2px;
+        background-color: $color-third;
+        transform-origin: left;
+      }
+    }
+  }
+
+  @media (max-width: 576px) {
+    padding: 13px;
+  }
+}
+
+.task-name {
+  .title {
+    font-size: 20px;
+    font-weight: 400;
+    color: $color-second;
+    margin-left: 15px;
+
+    @media (max-width: 576px) {
+      font-size: 18px;
+    }
+  }
+}
+
+.task-actions {
+  margin-left: auto;
+  z-index: 20;
+
+  button {
+    @include margin($right: 20px);
+
+    @media (max-width: 576px) {
+      @include margin($right: 10px);
+    }
+  }
+}
+
+.task-edit {
+  @include position-center('top');
+  left: -2px;
+  width: calc(100% + 4px);
+  height: calc(100% + 4px);
+  z-index: 10;
+
+  input {
+    width: 100%;
+  }
+}
+
+@import './task-checkbox';
