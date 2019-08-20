@@ -16,6 +16,7 @@
     font-size: 22px;
     font-weight: 400;
     color: $color-third;
+    text-transform: capitalize;
 
     &::after {
       content: '';

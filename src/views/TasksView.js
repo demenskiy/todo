@@ -5,10 +5,24 @@ export default class TasksView extends EventEmitter {
   constructor() {
     super();
 
-    this.root = document.querySelector('#tasks');
+    this.state = {
+      lists: {},
+      tasksNumber: 0,
+      hasCurrentTasks: false,
+      hasCheckedTasks: false
+    };
 
+    this.root = document.querySelector('#tasks');
+  }
+
+  init() {
     this.render();
     this.setEventListeners();
+  }
+
+  setState(state) {
+    this.state = { ...this.state, ...state };
+    this.render();
   }
 
   addTask(task) {
@@ -27,14 +41,26 @@ export default class TasksView extends EventEmitter {
     task.parentElement.remove();
   }
 
+  toggleTask(data) {
+    const { current, completed } = this.state.lists;
+    const task = this.getTask(data.id).parentElement;
+
+    if (!data.isChecked) {
+      return current.insertAdjacentElement('afterbegin', task);
+    }
+
+    return completed.insertAdjacentElement('afterbegin', task);
+  }
+
   getTask(id) {
-    const task = this.list.querySelector(`[data-id='${id}']`);
+    const { all } = this.state.lists;
+    const task = all.querySelector(`[data-id='${id}']`);
 
     return task;
   }
 
   displayTasks(tasks) {
-    tasks.forEach(task => this.renderTask(task));
+    tasks.forEach(task => this.addTask(task));
   }
 
   renderForm() {
@@ -49,48 +75,23 @@ export default class TasksView extends EventEmitter {
 
     this.root.insertAdjacentHTML('beforeend', markup);
 
-    this.form = this.root.querySelector('#form-add-task');
-    this.form.taskName.setAttribute('autocomplete', 'off');
-  }
-
-  renderList() {
-    const markup = `
-      <div class='tasks-lists'>
-
-        <div class='tasks-current'>
-          <div class='section-title'>
-            <h3 class='title'>Current</h3>
-          </div>
-          <ul></ul>
-        </div>
-
-        <div class='tasks-completed'>
-          <div class='section-title'>
-            <h3 class='title'>Completed</h3>
-          </div>
-          <ul></ul>
-        </div>
-        
-      </div>
-    `;
-
-    this.root.insertAdjacentHTML('beforeend', markup);
-
-    this.list = this.root.querySelector('.tasks-lists');
-    this.listCurrent = this.list.querySelector('.tasks-current ul');
-    this.listCompleted = this.list.querySelector('.tasks-completed ul');
+    this.state.form = this.root.querySelector('#form-add-task');
+    this.state.form.taskName.setAttribute('autocomplete', 'off');
   }
 
   renderTask(task) {
-    const className = task.isChecked ? ' checked' : '';
+    const { current, completed } = this.state.lists;
+
+    const list = task.isChecked ? completed : current;
+    const isChecked = task.isChecked ? ' checked' : '';
 
     const markup = `
       <li>
-        <div class='task${className}' data-id='${task.id}'>
+        <div class='task${isChecked}' data-id='${task.id}'>
 
-          <div class='task-check'>
+          <div class='task-checkbox'>
             <label>
-              <input type='checkbox' name='taskCheck'${className}>
+              <input type='checkbox' name='taskCheckbox'${isChecked}>
               <span class='checkbox'></span>
             </label>
           </div>  
@@ -112,35 +113,86 @@ export default class TasksView extends EventEmitter {
       </li>
     `;
 
-    const list = task.isChecked ? this.listCompleted : this.listCurrent;
     list.insertAdjacentHTML('afterbegin', markup);
   }
 
+  renderList(list) {
+    const { lists } = this.state;
+
+    if (lists[list]) return;
+
+    const position = list === 'current' ? 'afterbegin' : 'beforeend';
+
+    const markup = `
+      <div class="tasks-${list}">
+        <div class="section-title">
+          <h3 class="title">${list}</h3>
+        </div>
+        <ul></ul>
+      </div>
+    `;
+
+    lists.all.insertAdjacentHTML(position, markup);
+    lists[list] = lists.all.querySelector(`.tasks-${list} ul`);
+  }
+
+  renderLists() {
+    const { lists, hasCurrentTasks, hasCheckedTasks } = this.state;
+
+    if (!lists.all) {
+      const markup = `<div class="tasks-lists"></div>`;
+
+      this.root.insertAdjacentHTML('beforeend', markup);
+      lists.all = this.root.querySelector('.tasks-lists');
+    }
+
+    if (lists.current && !hasCurrentTasks) {
+      const list = findElementParent(lists.current, '.tasks-current');
+      list.remove();
+    }
+
+    if (lists.completed && !hasCheckedTasks) {
+      const list = findElementParent(lists.current, '.tasks-completed');
+      list.remove();
+    }
+
+    hasCurrentTasks && this.renderList('current');
+    hasCheckedTasks && this.renderList('completed');
+  }
+
   render() {
-    this.renderForm();
-    this.renderList();
+    !this.state.form && this.renderForm();
+    this.renderLists();
   }
 
   setEventListeners() {
-    this.form.addEventListener('click', event => {
+    const { form, lists } = this.state;
+
+    form.addEventListener('click', event => {
       event.preventDefault();
+
       const { target } = event;
 
-      if (target.name === 'taskAdd') return onAddTask(target);
+      if (target.name === 'taskAdd') return onAddTask();
     });
 
-    this.list.addEventListener('click', event => {
-      const { target } = event;
-      const { parentElement } = target;
+    lists.all.addEventListener('click', event => {
+      let { target } = event;
 
-      if (parentElement.name === 'taskEdit') return onEditTask(target);
-      if (parentElement.name === 'taskSave') return onSaveTask(target);
-      if (parentElement.name === 'taskDelete') return onDeleteTask(target);
-      if (target.name === 'taskCheck') return onCheckTask(target);
+      if (target.tagName === 'I') target = target.parentElement;
+
+      if (target.name === 'taskEdit') return onEditTask(target);
+      if (target.name === 'taskSave') return onSaveTask(target);
+      if (target.name === 'taskDelete') return onDeleteTask(target);
+      if (target.name === 'taskCheckbox') return onToggleTask(target);
     });
+
+    const validate = name => {
+      return name.length > 3 ? true : false;
+    };
 
     const onAddTask = () => {
-      const { taskName } = this.form;
+      const { taskName } = form;
       const name = taskName.value.trim();
 
       if (!validate(name)) return;
@@ -152,18 +204,19 @@ export default class TasksView extends EventEmitter {
       this.emit('add', task);
     };
 
-    const onEditTask = target => {
-      const task = findElementParent(target, '[data-id]');
+    const onEditTask = button => {
+      const task = findElementParent(button, '[data-id]');
       const title = task.querySelector('.title');
-      const button = target.parentElement;
 
       button.name = 'taskSave';
-      button.removeChild(target);
+      button.removeChild(button.firstElementChild);
       button.insertAdjacentHTML('beforeend', '<i class="far fa-save"></i>');
 
+      form.taskSave = button;
+
       const markup = `
-        <div class='task-edit'>  
-          <input 
+        <div class='task-edit'>
+          <input
             name='taskNameNew'
             placeholder='Edit task name'
             value='${title.textContent}'
@@ -173,26 +226,29 @@ export default class TasksView extends EventEmitter {
 
       title.insertAdjacentHTML('afterend', markup);
 
-      const taskNameNew = task.querySelector('[name="taskNameNew"');
+      form.taskNamaNew = task.querySelector('[name="taskNameNew"]');
 
-      taskNameNew.select();
+      form.taskNamaNew.addEventListener('keypress', event => {
+        event.key === 'Enter' && onSaveTask(event.target);
+      });
+
+      form.taskNamaNew.select();
     };
 
     const onSaveTask = target => {
       const task = findElementParent(target, '[data-id]');
-      const taskNameNew = task.querySelector('[name="taskNameNew"');
-      const button = target.parentElement;
+      const button = form.taskSave;
 
+      const name = form.taskNamaNew.value.trim();
       const id = +task.dataset.id;
-      const name = taskNameNew.value.trim();
 
       if (!validate(name)) return;
 
-      taskNameNew.parentElement.remove();
+      form.taskNamaNew.parentElement.remove();
 
       button.blur();
       button.name = 'taskEdit';
-      button.removeChild(target);
+      button.removeChild(button.firstElementChild);
       button.insertAdjacentHTML('beforeend', '<i class="far fa-edit"></i>');
 
       const data = { id, name };
@@ -207,7 +263,7 @@ export default class TasksView extends EventEmitter {
       this.emit('delete', id);
     };
 
-    const onCheckTask = checkbox => {
+    const onToggleTask = checkbox => {
       const task = findElementParent(checkbox, '[data-id]');
 
       task.classList.toggle('checked');
@@ -217,11 +273,7 @@ export default class TasksView extends EventEmitter {
         isChecked: checkbox.checked
       };
 
-      this.emit('edit', data);
-    };
-
-    const validate = field => {
-      return field.length > 3 ? true : false;
+      this.emit('toggle', data);
     };
   }
 }
