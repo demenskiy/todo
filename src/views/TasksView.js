@@ -63,6 +63,17 @@ export default class TasksView extends EventEmitter {
     tasks.forEach(task => this.addTask(task));
   }
 
+  displayList(listType, action) {
+    const { lists } = this.state;
+    const list = findElementParent(lists[listType], '.tasks-list');
+
+    if (action === 'show') {
+      return list.classList.remove('hidden');
+    }
+
+    return list.classList.add('hidden');
+  }
+
   renderForm() {
     const markup = `
       <div class='tasks-form'>
@@ -124,7 +135,7 @@ export default class TasksView extends EventEmitter {
     const position = list === 'current' ? 'afterbegin' : 'beforeend';
 
     const markup = `
-      <div class="tasks-${list}">
+      <div class="tasks-list tasks-${list}">
         <div class="section-title">
           <h3 class="title">${list}</h3>
         </div>
@@ -146,18 +157,17 @@ export default class TasksView extends EventEmitter {
       lists.all = this.root.querySelector('.tasks-lists');
     }
 
-    if (lists.current && !hasCurrentTasks) {
-      const list = findElementParent(lists.current, '.tasks-current');
-      list.remove();
-    }
+    const requiredLists = ['current', 'completed'];
 
-    if (lists.completed && !hasCheckedTasks) {
-      const list = findElementParent(lists.current, '.tasks-completed');
-      list.remove();
-    }
+    requiredLists.forEach(list => {
+      !lists[list] && this.renderList(list);
 
-    hasCurrentTasks && this.renderList('current');
-    hasCheckedTasks && this.renderList('completed');
+      this.displayList(list, 'hide');
+
+      const hasTasks = list === 'current' ? hasCurrentTasks : hasCheckedTasks;
+
+      hasTasks && this.displayList(list, 'show');
+    });
   }
 
   render() {

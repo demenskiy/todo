@@ -1,5 +1,8 @@
 .tasks-lists {
-  margin-top: 60px;
+  &:first-child {
+    margin-top: 60px;
+  }
+
   ul {
     padding: 0;
     margin: 35px 0 0 0;
@@ -9,6 +12,10 @@
   li {
     @include margin($bottom: 25px);
   }
+}
+
+.tasks-list.hidden {
+  display: none;
 }
 
 .task {
