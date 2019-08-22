@@ -4,16 +4,16 @@ Simple JavaScript TODO app based on the MVC and EventEmitter pattern with locale
 
 [View the demo](https://demenskiy.github.io/todo/)
 
-### Main features
+## Main features
 
 This app has the following features:
 
 1. Create, update and delete todo;
 2. Current and completed todo sections;
 3. Adaptive and responsive markup;
-4. Smooth todo animation.
+4. Smooth animation.
 
-### Technologies
+## Technologies
 
 The following technologies were used to develop the app:
 
