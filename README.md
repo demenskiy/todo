@@ -21,4 +21,6 @@ The following technologies were used to develop the app:
 4. MVC pattern;
 5. EventEmitter pattern.
 
+---
+
 [View the demo](https://demenskiy.github.io/todo/)
