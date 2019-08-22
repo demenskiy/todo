@@ -2,7 +2,9 @@
 
 Simple JavaScript TODO app based on the MVC and EventEmitter pattern with localeStorage.
 
-## Main features
+[View the demo](https://demenskiy.github.io/todo/)
+
+### Main features
 
 This app has the following features:
 
@@ -11,7 +13,7 @@ This app has the following features:
 3. Adaptive and responsive markup;
 4. Smooth todo animation.
 
-## Technologies
+### Technologies
 
 The following technologies were used to develop the app:
 
@@ -20,7 +22,3 @@ The following technologies were used to develop the app:
 3. localeStorage;
 4. MVC pattern;
 5. EventEmitter pattern.
-
----
-
-[View the demo](https://demenskiy.github.io/todo/)
