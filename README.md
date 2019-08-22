@@ -1,4 +1,4 @@
-# todo
+# What todo?
 
 Simple JavaScript TODO app based on the MVC and EventEmitter pattern with localeStorage.
 
