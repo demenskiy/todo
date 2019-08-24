@@ -2,7 +2,7 @@
 
 Simple JavaScript TODO app based on the MVC and EventEmitter pattern with localeStorage.
 
-[View the demo](https://demenskiy.github.io/todo/)
+[View the demo](https://demenskiy.github.io/what-todo/)
 
 #### Main features
 
