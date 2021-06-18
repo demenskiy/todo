@@ -1,6 +1,6 @@
 # What todo?
 
-Simple JavaScript TODO app based on the MVC and EventEmitter pattern with localeStorage.
+Simple JavaScript TODO app based on the MVC and EventEmitter pattern with localStorage.
 
 [View the demo](https://demenskiy.github.io/what-todo/)
 
@@ -19,7 +19,7 @@ The following technologies were used to develop the app:
 
 1. HTML5, CSS3, SCSS;
 2. JavaScript (ES6);
-3. localeStorage;
+3. localStorage;
 4. MVC pattern;
 5. EventEmitter pattern.
 
